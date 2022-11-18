@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kategori;
+use App\Models\Transaction;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class KategoriController extends Controller
+class TransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,10 +20,10 @@ class KategoriController extends Controller
     public function index()
     {
         //
-        $kategori = Kategori::orderBy('id', 'DESC')->get();
+        $transaction = Transaction::orderBy('time', 'DESC')->get();
         $response = [
-            'message' =>  'List transcaction order by id_kategori',
-            'data' => $kategori
+            'message' =>  'List transcaction order by time',
+            'data' => $transaction
         ];
 
         return response()->json($response, Response::HTTP_OK);
@@ -48,18 +48,20 @@ class KategoriController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'kategori' => ['required'],
-            ]);
+            'tittle' => ['required'],
+            'amount' => ['required', 'numeric'],
+            'type'  =>  ['required', 'in:expense,revenue']
+        ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
-            $kategori = Kategori::create($request->all());
+            $transaction = Transaction::create($request->all());
             $response = [
-                'message' => 'kategori Created',
-                'data'  => $kategori
+                'message' => 'Transaction Created',
+                'data'  => $transaction
             ];
 
             return response()->json($response, Response::HTTP_CREATED);
@@ -83,15 +85,15 @@ class KategoriController extends Controller
     public function show($id)
     {
         //
-        $kategori = Kategori::findOrFail($id);
+        
+        $transaction = Transaction::findOrFail($id);
         $response = [
-            'message' => 'Detail of kategori resource',
-            'data'  => $kategori
+            'message' => 'Detail of transaction resource',
+            'data'  => $transaction
         ];
 
         return response()->json($response, Response::HTTP_OK);
-          
-        
+
     }
 
     /**
@@ -115,11 +117,12 @@ class KategoriController extends Controller
     public function update(Request $request, $id)
     {
 
-        $kategori = Kategori::findOrFail($id);
+        $transaction = Transaction::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'id' => ['required', 'numeric'],
-            'kategori' => ['required'],
+            'tittle' => ['required'],
+            'amount' => ['required', 'numeric'],
+            'type'  =>  ['required', 'in:expense,revenue']
         ]);
 
         if ($validator->fails()) {
@@ -127,10 +130,10 @@ class KategoriController extends Controller
         }
 
         try {
-            $kategori->update($request->all());
+            $transaction->update($request->all());
             $response = [
-                'message' => 'Kategori Updated',
-                'data'  => $kategori
+                'message' => 'Transaction Updated',
+                'data'  => $transaction
             ];
 
             return response()->json($response, Response::HTTP_CREATED);
@@ -153,12 +156,12 @@ class KategoriController extends Controller
     public function destroy($id)
     {
         //
-        $kategori = Kategori::findOrFail($id);
+        $transaction = Transaction::findOrFail($id);
 
         try {
-            $kategori->delete();
+            $transaction->delete();
             $response = [
-                'message' => 'kategori Deleted',
+                'message' => 'Transaction Deleted',
             ];
 
             return response()->json($response, Response::HTTP_OK);
