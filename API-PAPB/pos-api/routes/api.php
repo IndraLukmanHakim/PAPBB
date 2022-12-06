@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\kategoriController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\TransactionController;
+use App\Http\Controllers\API\ProductCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,29 +18,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('user', [UserController::class, 'fetch']);
+    Route::post('user', [UserController::class, 'updateProfile']);
+    Route::post('logout', [UserController::class, 'logout']);
+
+    Route::get('transactions', [TransactionController::class, 'all']);
+    Route::post('checkout', [TransactionController::class, 'checkout']);
 });
 
-// //TRANSACTION API 
 
-// Route::get('/transaction', [TransactionController::class, 'index'] );
-// Route::get('/transaction/{id}', [TransactionController::class, 'show'] );
-// Route::post('/transaction', [TransactionController::class, 'store']);
-// Route::put('/transaction/{id}', [TransactionController::class, 'update']);
-// Route::delete('transaction/{id}', [TransactionController::class, 'destroy']);
+Route::get('products', [ProductController::class, 'all']);
+Route::get('categories', [ProductCategoryController::class, 'all']);
 
-
-// API FOR TRANSACTION TABLE
-Route::resource('/transaction', TransactionController::class)->except(['create', 'edit']);
-
-
-// // API FOR KATEGORI TABLE
-// Route::get('/kategori', [KategoriController::class, 'index']);
-// Route::get('/kategori/{id}', [KategoriController::class, 'show']);
-// Route::post('/kategori', [KategoriController::class, 'store']);
-// Route::put('/kategori/{id}', [kategoriController::class, 'update']);
-// Route::delete('/kategori/{id}', [KategoriController::class, 'destroy']);
-
-// API FOR KATEGORI TABLE (ALTERNATIVE)
-Route::resource('/kategori', kategoriController::class);
+Route::post('login', [UserController::class, 'login']);
+Route::post('register', [UserController::class, 'register']);
