@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "47c8d000-ed25-460d-a7af-c6fa43bad155",
 		"name": "API",
-		"description": "API for Laravel Flutter Class",
+		"description": "API for Laravel Flutter",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
